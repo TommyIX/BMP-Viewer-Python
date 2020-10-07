@@ -7,13 +7,9 @@ import math
 from collections import deque
 import matplotlib.pyplot as plt
 
-def grayplot(graydi):
-    plt.hist(graydi.reshape(1,-1))
-    plt.show()
-
 if __name__ == "__main__":
     print("BMPViewer Lite(Python Version)\n图像处理课程2020 第一次作业\n王锦宏 19351125")
-    filePath = "C:\\Users\\jhong\\Desktop\\testbmp\\4.bmp"
+    filePath = input("请输入需要打开的BMP文件目录：")
     file = open(filePath, "rb")
     
     #BMP文件信息表
@@ -126,11 +122,13 @@ if __name__ == "__main__":
     g = np.flipud(np.array(G, dtype = np.uint8))
     r = np.flipud(np.array(R, dtype = np.uint8))
     graydiation = r*0.3+b*0.11+g*0.59
-    print("关闭两个窗口以执行剩余代码")
-    threadplt = threading.Thread(target = grayplot, args=(graydiation,))
-    threadplt.start()
+    print("即将分别显示直方图与预览图")
+    #threadplt = threading.Thread(target = grayplot, args=(graydiation,))
+    #threadplt.start()
     cv2.imshow("BMPDisplay-Python", cv2.merge([b,g,r]))
     cv2.waitKey()
+    plt.hist(graydiation)
+    plt.show()
     print("如果需要保存文件，请输入目录(需要包含保存的文件名)，如果不需要，直接回车即可结束程序")
     savecatelog=input("目录：")
     if(savecatelog!=""):
