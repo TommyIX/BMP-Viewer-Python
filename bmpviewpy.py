@@ -1,11 +1,11 @@
 from struct import unpack
 import numpy as np
 import cv2
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     print("BMPViewer Lite(Python Version) 王锦宏 19351125")
-    filePath = "C:\\Users\\jhong\\Desktop\\testbmp\\default\\head.bmp"
+    filePath = "C:\\Users\\jhong\\Desktop\\testbmp\\16.bmp"
     file = open(filePath, "rb")
     
     #BMP文件信息表
@@ -27,8 +27,6 @@ if __name__ == "__main__":
     biClrImportant = unpack("<i", file.read(4))[0] # 对图像显示有重要影响的颜色索引的数目
     bmp_data = []
 
-    
-    
     if (biBitCount ==24):
         for height in range(biHeight) :
             bmp_data_row = []
@@ -37,28 +35,55 @@ if __name__ == "__main__":
                 bmp_data_row.append([unpack("<B", file.read(1))[0], unpack("<B", file.read(1))[0], unpack("<B", file.read(1))[0]])
                 count = count + 3
             bmp_data.append(bmp_data_row)
-        file.close()
-        R=[]
-        G=[]
-        B=[]
-        for row in range(biHeight):
-            R_row = []
-            G_row = []
-            B_row = []
-            for col in range(biWidth) :
-                B_row.append(bmp_data[row][col][0])
-                G_row.append(bmp_data[row][col][1])
-                R_row.append(bmp_data[row][col][2])
-            B.append(B_row)
-            G.append(G_row)
-            R.append(R_row)
-        b = np.flipud(np.array(B, dtype = np.uint8))
-        g = np.flipud(np.array(G, dtype = np.uint8))
-        r = np.flipud(np.array(R, dtype = np.uint8))
         
-        #graydiation = np.zeros((256,dtype = np.int))
-        #for x in np.nditer(b):
-        cv2.imshow("BMPDisplay-Python", cv2.merge([b,g,r]))
-        cv2.waitKey()
         
-    #elif (biBitCount==16):
+    elif (biBitCount==16):
+        for height in range(biHeight) :
+            bmp_data_row = []
+            count = 0
+            for width in range(biWidth) :
+                rawtwodata = unpack("<h", file.read(2))[0]
+                if(biCompression==0):
+                    bmp_data_row.append([(((rawtwodata & 0x7c00)>>10)+1)*8-1,(((rawtwodata & 0x03e0)>>5)+1)*8-1, ((rawtwodata & 0x001f)+1)*8-1])
+                else:
+                    bmp_data_row.append([((rawtwodata & 0xf800)>>11)*8+7, ((rawtwodata&0x07e0)>>5)*4+3, ((rawtwodata&0x001f)>>5)*8+7])
+                count = count + 3
+            bmp_data.append(bmp_data_row)
+    
+    elif (biBitCount==8):
+        '''for height in range(biHeight) :
+            bmp_data_row = []
+            count = 0
+            for width in range(biWidth) :
+                rawtwodata = unpack("<h", file.read(2))[0]
+                if(biCompression==0):
+                    bmp_data_row.append([(((rawtwodata & 0x7c00)>>10)+1)*8-1,(((rawtwodata & 0x03e0)>>5)+1)*8-1, ((rawtwodata & 0x001f)+1)*8-1])
+                else:
+                    bmp_data_row.append([((rawtwodata & 0xf800)>>11)*8+7, ((rawtwodata&0x07e0)>>5)*4+3, ((rawtwodata&0x001f)>>5)*8+7])
+                count = count + 3
+            bmp_data.append(bmp_data_row)'''
+
+
+    file.close()
+    R=[]
+    G=[]
+    B=[]
+    for row in range(biHeight):
+        R_row = []
+        G_row = []
+        B_row = []
+        for col in range(biWidth) :
+            B_row.append(bmp_data[row][col][0])
+            G_row.append(bmp_data[row][col][1])
+            R_row.append(bmp_data[row][col][2])
+        B.append(B_row)
+        G.append(G_row)
+        R.append(R_row)
+    b = np.flipud(np.array(B, dtype = np.uint8))
+    g = np.flipud(np.array(G, dtype = np.uint8))
+    r = np.flipud(np.array(R, dtype = np.uint8))
+        
+    #graydiation = np.zeros((256,dtype = np.int))
+    #for x in np.nditer(b):
+    cv2.imshow("BMPDisplay-Python", cv2.merge([b,g,r]))
+    cv2.waitKey()
