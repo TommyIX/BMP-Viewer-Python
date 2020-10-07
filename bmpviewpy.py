@@ -3,8 +3,7 @@ import numpy as np
 import cv2
 
 if __name__ == "__main__":
-    
-    filePath = "C:\\Users\\jhong\\Desktop\\testbmp\\default\\head.bmp"
+    filePath = "C:\\Users\\jhong\\Desktop\\testbmp\\default\\marry.bmp"
     file = open(filePath, "rb")
     
     #读取BMP文件信息
@@ -33,7 +32,7 @@ if __name__ == "__main__":
                 bmp_data_row.append([unpack("<B", file.read(1))[0], unpack("<B", file.read(1))[0], unpack("<B", file.read(1))[0]])
                 count = count + 3
             bmp_data.append(bmp_data_row)
-            bmp_data.reverse()
+            #bmp_data.reverse()
     
     file.close()
     
@@ -55,5 +54,7 @@ if __name__ == "__main__":
     b = np.array(B, dtype = np.uint8)
     g = np.array(G, dtype = np.uint8)
     r = np.array(R, dtype = np.uint8)
-    merged = cv2.merge([b, g, r])
-    cv2.imshow("Merged",merged)
+    cv2.imshow("GOOD", cv2.merge([b,g,r]))
+    cv2.waitKey()
+    #merged = cv2.merge([b, g, r])
+    #cv2.imshow("Merged",merged)
